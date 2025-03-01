@@ -25,6 +25,8 @@ public class DrawerInteractable : XRGrabInteractable
     [SerializeField]
     Vector3 limitDistances = new Vector3(.01f,.01f,0);
 
+    [SerializeField]
+    float maxZPos = 0.9f;
 
     //XRSocketInteractable HAS AN AWAKE METHOD!!! DO NOT OVERRIDE ITS AWAKE METHOD WITHOUT CALLING IT
     protected override void Awake()
@@ -103,6 +105,21 @@ public class DrawerInteractable : XRGrabInteractable
         else if (transform.localPosition.y >= limitPositions.y + limitDistances.y ||
             transform.localPosition.y <=  limitPositions.y - limitDistances.y)
         {
+            ChangeLayerMask(defaultLayer);
+        }
+        else if (drawerTransform.localPosition.z <= limitPositions.z - limitDistances.z)
+        {
+            isGrabbed = false;
+            ChangeLayerMask(defaultLayer);
+            drawerTransform.localPosition = limitPositions;
+        }
+        else if (drawerTransform.localPosition.z >= maxZPos + limitDistances.z)
+        {
+            isGrabbed = false;
+            drawerTransform.localPosition = new Vector3(
+                drawerTransform.localPosition.x,
+                drawerTransform.localPosition.y,
+                maxZPos);
             ChangeLayerMask(defaultLayer);
         }
     }
