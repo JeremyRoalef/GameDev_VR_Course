@@ -12,10 +12,18 @@ public class DrawerInteractable : XRGrabInteractable
     [SerializeField]
     bool isLocked = true;
 
+    [SerializeField]
+    Transform drawerTransform;
+
     Transform parentTransform;
     const string defaultLayer = "Default";
     const string grabLayer = "Grab";
 
+    bool isGrabbed = false;
+    Vector3 limitPositions;
+
+    [SerializeField]
+    Vector3 limitDistances = new Vector3(.01f,.01f,0);
 
 
     //XRSocketInteractable HAS AN AWAKE METHOD!!! DO NOT OVERRIDE ITS AWAKE METHOD WITHOUT CALLING IT
@@ -32,6 +40,7 @@ public class DrawerInteractable : XRGrabInteractable
         }
 
         parentTransform = transform.parent.transform;
+        limitPositions = drawerTransform.localPosition;
     }
 
     private void OnDrawerLocked(SelectExitEventArgs arg0)
@@ -52,31 +61,54 @@ public class DrawerInteractable : XRGrabInteractable
         if (isLocked)
         {
             //Change interaction layer mask
-            interactionLayers = InteractionLayerMask.GetMask(defaultLayer);
+            ChangeLayerMask(defaultLayer);
         }
         else
         {
             //Prevent the child object from disconneceting from the parent when grabbed
             //This will allow us to track its local z position
-            transform.SetParent(parentTransform, false);
+            transform.SetParent(parentTransform);
+            isGrabbed = true;
         }
     }
 
     protected override void OnSelectExited(SelectExitEventArgs args)
     {
         base.OnSelectExited(args);
-        interactionLayers = InteractionLayerMask.GetMask(grabLayer);
-
+        ChangeLayerMask(grabLayer);
+        isGrabbed = false;
+        transform.localPosition = drawerTransform.localPosition;
     }
 
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
     void Update()
     {
-        
+        if (isGrabbed && drawerTransform != null)
+        {
+            drawerTransform.localPosition = new Vector3(
+                drawerTransform.localPosition.x,
+                drawerTransform.localPosition.y,
+                transform.localPosition.z);
+
+            CheckPositionLimits();
+        }
+    }
+
+    void CheckPositionLimits()
+    {
+        if (transform.localPosition.x >= limitPositions.x + limitDistances.x ||
+            transform.localPosition.x <= limitPositions.x - limitDistances.x)
+        {
+            ChangeLayerMask(defaultLayer);
+        }
+        else if (transform.localPosition.y >= limitPositions.y + limitDistances.y ||
+            transform.localPosition.y <=  limitPositions.y - limitDistances.y)
+        {
+            ChangeLayerMask(defaultLayer);
+        }
+    }
+
+    private void ChangeLayerMask(string layerMask)
+    {
+        interactionLayers = InteractionLayerMask.GetMask(layerMask);
     }
 }
