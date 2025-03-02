@@ -68,4 +68,9 @@ public class ButtonInteractable : XRSimpleInteractable
         base.OnSelectExited(args);
         buttonImage.color = buttonSelectedColor;
     }
+
+    public void SetColorToNormal()
+    {
+        buttonImage.color = buttonNormalColor;
+    }
 }
