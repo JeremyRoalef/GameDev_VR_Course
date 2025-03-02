@@ -10362,13 +10362,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3baecbc857a26240b49714e0de673e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  numberCombination: 0412
+  numberCombination: 0132
   comboButtons:
   - {fileID: 1904128761}
   - {fileID: 1353159802}
   - {fileID: 910071357}
   - {fileID: 1056581078}
   textInput: {fileID: 1153786299}
+  isLocked: 1
+  unlockedButtonColor: {r: 0, g: 1, b: 0, a: 1}
+  incorrectComboButtonColor: {r: 1, g: 0, b: 0, a: 1}
 --- !u!114 &701791831
 MonoBehaviour:
   m_ObjectHideFlags: 0

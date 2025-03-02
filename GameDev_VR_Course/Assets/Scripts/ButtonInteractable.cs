@@ -71,6 +71,11 @@ public class ButtonInteractable : XRSimpleInteractable
 
     public void SetColorToNormal()
     {
-        buttonImage.color = buttonNormalColor;
+        SetButtonColor(buttonNormalColor);
+    }
+
+    public void SetButtonColor(Color newColor)
+    {
+        buttonImage.color = newColor;
     }
 }
